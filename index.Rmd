@@ -125,4 +125,4 @@ d
 Source Code
 -----------
 
-[http://brady-score.github.io](http://brady-score.github.io)
+[http://github.com/brady-score](http://github.com/brady-score)
