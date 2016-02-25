@@ -5,6 +5,8 @@ output:
     self_contained: no
 ---
 
+Just the data. Draw your own conclusions.
+
 ```{r rawdata, echo=FALSE, message=FALSE, warning=FALSE}
 d <- read.csv(
 text = "
@@ -96,8 +98,8 @@ text(d$brady_raw_score, d$active_shooter_deaths_per_100000, d$state, cex=0.5)
 summary(lm(d$active_shooter_deaths_per_100000~d$brady_raw_score, weights=d$population))
 ```
 
-Data Sources
-------------
+Sources
+-------
 
 * Brady Campain to Prevent Gun Violence,
   [2013 State Scorecard](http://www.bradycampaign.org/2013-state-scorecard)
@@ -120,3 +122,7 @@ options(width=200)
 d
 ```
 
+Source Code
+-----------
+
+[http://brady-score.github.io](http://brady-score.github.io)
