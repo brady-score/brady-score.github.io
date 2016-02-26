@@ -79,6 +79,21 @@ symbols(d$brady_raw_score, d$firearm_murders_per_100000,
 text(d$brady_raw_score, d$firearm_murders_per_100000, d$state, cex=0.5)
 ```
 
+```{r roc1, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=6.5, dpi=300}
+s <- d[order(d$brady_raw_score),]
+s <- subset(s, s$state!='Florida') # No data for Florida
+plot( cumsum(s$population-s$murders)/sum(s$population-s$murders)
+    , cumsum(s$murders)/sum(s$murders)
+    , xlim=c(0,1)
+    , ylim=c(0,1)
+    , xlab="Proportion of not murdered with firearm"
+    , ylab="Proportion of murdered with firearm"
+    , type='l'
+    , main="Receiver Operating Characteristic"
+    )
+abline(0,1,lty=3)
+```
+
 ```{r a1m2, echo=FALSE, message=FALSE, warning=FALSE, comment=NA}
 summary(lm(d$firearm_murders_per_100000~d$brady_raw_score, weights=d$population))
 ```
@@ -92,6 +107,20 @@ symbols(d$brady_raw_score, d$active_shooter_deaths_per_100000,
      fg="white", bg="lightblue", inches=0.2
      )
 text(d$brady_raw_score, d$active_shooter_deaths_per_100000, d$state, cex=0.5)
+```
+
+```{r roc2, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=6.5, dpi=300}
+s <- d[order(d$brady_raw_score),]
+plot( cumsum(s$population-s$active_shooter_deaths)/sum(s$population-s$active_shooter_deaths)
+    , cumsum(s$active_shooter_deaths)/sum(s$active_shooter_deaths)
+    , xlim=c(0,1)
+    , ylim=c(0,1)
+    , xlab="Proportion of not murdered by active shooter"
+    , ylab="Proportion of murdered by active shooter"
+    , type='l'
+    , main="Receiver Operating Characteristic"
+    )
+abline(0,1,lty=3)
 ```
 
 ```{r a2m1, echo=FALSE, message=FALSE, warning=FALSE, comment=NA}
