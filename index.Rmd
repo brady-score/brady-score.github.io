@@ -68,7 +68,7 @@ d$firearm_murders_per_100000 <- d$murders_with_firearms / (d$population/100000)
 d$active_shooter_deaths_per_100000 <- d$active_shooter_deaths / (d$population*(2013-2000+1)/100000)
 ```
 
-```{r scatterplot1,  echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5, dpi=300}
+```{r scatterplot1,  echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5, dpi=150}
 par(mar=c(4,4,1,1))
 symbols(d$brady_raw_score, d$firearm_murders_per_100000, 
      circles=sqrt(d$population), 
@@ -79,7 +79,7 @@ symbols(d$brady_raw_score, d$firearm_murders_per_100000,
 text(d$brady_raw_score, d$firearm_murders_per_100000, d$state, cex=0.5)
 ```
 
-```{r roc1, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=6.5, dpi=300}
+```{r roc1, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=6.5, dpi=150}
 s <- d[order(d$brady_raw_score),]
 s <- subset(s, s$state!='Florida') # No data for Florida
 plot( cumsum(s$population-s$murders)/sum(s$population-s$murders)
@@ -98,7 +98,7 @@ abline(0,1,lty=3)
 summary(lm(d$firearm_murders_per_100000~d$brady_raw_score, weights=d$population))
 ```
 
-```{r scatterplot2,  echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5, dpi=300}
+```{r scatterplot2,  echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5, dpi=150}
 par(mar=c(4,4,1,1))
 symbols(d$brady_raw_score, d$active_shooter_deaths_per_100000, 
      circles=sqrt(d$population), 
@@ -106,10 +106,12 @@ symbols(d$brady_raw_score, d$active_shooter_deaths_per_100000,
      ylab="Deaths in active shooter incidents per 100,000",
      fg="white", bg="lightblue", inches=0.2
      )
-text(d$brady_raw_score, d$active_shooter_deaths_per_100000, d$state, cex=0.5)
+t <- as.character(d$state)
+t[d$active_shooter_deaths == 0] <- ''
+text(d$brady_raw_score, d$active_shooter_deaths_per_100000, t, cex=0.5)
 ```
 
-```{r roc2, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=6.5, dpi=300}
+```{r roc2, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=6.5, dpi=150}
 s <- d[order(d$brady_raw_score),]
 plot( cumsum(s$population-s$active_shooter_deaths)/sum(s$population-s$active_shooter_deaths)
     , cumsum(s$active_shooter_deaths)/sum(s$active_shooter_deaths)
