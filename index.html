@@ -66,20 +66,56 @@ img {
 </div>
 
 
-<p><img src="index_files/figure-html/scatterplot1-1.png" title="" alt="" width="1800" /></p>
+<p>The Law Center to Prevent Gun Violence and the Brady Campaign to Prevent Gun Violence ranked all fifty states based on thirty policy approaches to regulating guns and ammunition. States received points for stronger laws and lost points for weaker laws.</p>
+<p>The purpose of this analysis is to let you check the validity of the following statement by the Brady Campaign:</p>
+<blockquote>
+<p>…it is clear that the data supports the conclusion that state gun laws and the rate of gun deaths are closely tied.</p>
+</blockquote>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Dependent varaible</th>
+<th align="left">p value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Murders with firearm per 100,000</td>
+<td align="left">0.35</td>
+</tr>
+<tr class="even">
+<td align="left">Deaths in active shooter incidents per 100,000</td>
+<td align="left">0.71</td>
+</tr>
+<tr class="odd">
+<td align="left">Suicides with firearm per 100,000</td>
+<td align="left">3.5e-10</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="murders-with-firearm" class="section level2">
+<h2>Murders with Firearm</h2>
+<p>Start with a simple scatterplot.</p>
+<p><img src="index_files/figure-html/scatterplot1-1.png" title="" alt="" width="900" /></p>
+<p>Horizontal axis is raw score (higher number means stronger laws). Vertical axis is rate of murders with firearm. Each state is represented by a cirle, circle size is proportional to state’s population.</p>
+<p>Next, plot <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic">receiver operating characteristic</a>. It visually shows separating power of a model. Diagonal line means no separation, curve going through upper left corner means ideal separation.</p>
+<p><img src="index_files/figure-html/roc1-1.png" title="" alt="" width="900" /></p>
+<p>Finally, fit linear regression weighted by population:</p>
 <pre><code>
 Call:
-lm(formula = d$firearm_murders_per_100000 ~ d$brady_raw_score, 
-    weights = d$population)
+lm(formula = d$firearm_murders_per_100000 ~ d$raw_score, weights = d$population)
 
 Weighted Residuals:
     Min      1Q  Median      3Q     Max 
 -6096.5 -2622.8  -948.4  1046.6  9840.0 
 
 Coefficients:
-                  Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)        3.14976    0.38951   8.086 1.89e-10 ***
-d$brady_raw_score -0.01544    0.01634  -0.945    0.349    
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  3.14976    0.38951   8.086 1.89e-10 ***
+d$raw_score -0.01544    0.01634  -0.945    0.349    
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -87,10 +123,15 @@ Residual standard error: 3039 on 47 degrees of freedom
   (1 observation deleted due to missingness)
 Multiple R-squared:  0.01866,   Adjusted R-squared:  -0.00222 
 F-statistic: 0.8937 on 1 and 47 DF,  p-value: 0.3493</code></pre>
-<p><img src="index_files/figure-html/scatterplot2-1.png" title="" alt="" width="1800" /></p>
+</div>
+<div id="mass-shootings" class="section level2">
+<h2>Mass Shootings</h2>
+<p>Now repeat the same comparison with mass shooting deaths.</p>
+<p><img src="index_files/figure-html/scatterplot2-1.png" title="" alt="" width="900" /></p>
+<p><img src="index_files/figure-html/roc2-1.png" title="" alt="" width="900" /></p>
 <pre><code>
 Call:
-lm(formula = d$active_shooter_deaths_per_100000 ~ d$brady_raw_score, 
+lm(formula = d$active_shooter_deaths_per_100000 ~ d$raw_score, 
     weights = d$population)
 
 Weighted Residuals:
@@ -98,77 +139,112 @@ Weighted Residuals:
 -27.990 -14.594  -8.173   9.084 110.794 
 
 Coefficients:
-                   Estimate Std. Error t value Pr(&gt;|t|)  
-(Intercept)       9.091e-03  3.468e-03   2.622   0.0117 *
-d$brady_raw_score 5.532e-05  1.461e-04   0.379   0.7067  
+             Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept) 9.091e-03  3.468e-03   2.622   0.0117 *
+d$raw_score 5.532e-05  1.461e-04   0.379   0.7067  
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
 Residual standard error: 27.19 on 48 degrees of freedom
 Multiple R-squared:  0.002977,  Adjusted R-squared:  -0.01779 
 F-statistic: 0.1433 on 1 and 48 DF,  p-value: 0.7067</code></pre>
-<div id="data-sources" class="section level2">
-<h2>Data Sources</h2>
+</div>
+<div id="suicides-with-a-firearm" class="section level2">
+<h2>Suicides with a Firearm</h2>
+<p>Finally, repeat the same comparison with suicides with a firearm.</p>
+<p><img src="index_files/figure-html/scatterplot3-1.png" title="" alt="" width="900" /></p>
+<p><img src="index_files/figure-html/roc3-1.png" title="" alt="" width="900" /></p>
+<pre><code>
+Call:
+lm(formula = d$suicides_with_firearms_per_100000 ~ d$raw_score, 
+    weights = d$population)
+
+Weighted Residuals:
+    Min      1Q  Median      3Q     Max 
+-9989.8 -2144.6   646.1  3918.4  9323.4 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 10.86456    0.58940  18.433  &lt; 2e-16 ***
+d$raw_score -0.19537    0.02484  -7.867 3.51e-10 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 4621 on 48 degrees of freedom
+Multiple R-squared:  0.5632,    Adjusted R-squared:  0.5541 
+F-statistic: 61.88 on 1 and 48 DF,  p-value: 3.505e-10</code></pre>
+</div>
+<div id="sources" class="section level2">
+<h2>Sources</h2>
 <ul>
 <li><p>Brady Campain to Prevent Gun Violence, <a href="http://www.bradycampaign.org/2013-state-scorecard">2013 State Scorecard</a></p></li>
 <li><p>FBI, <a href="https://www.fbi.gov/about-us/cjis/ucr/crime-in-the-u.s/2013/crime-in-the-u.s.-2013/tables/table-20/table_20_murder_by_state_types_of_weapons_2013.xls">Murder by State, Types of Weapons, 2013</a></p></li>
 <li><p>United States Census Bureau, <a href="http://www.census.gov/popest/data/state/totals/2015/index.html">Population Estimates</a></p></li>
 <li><p>FBI, <a href="https://www.fbi.gov/news/stories/2014/september/fbi-releases-study-on-active-shooter-incidents/pdfs/a-study-of-active-shooter-incidents-in-the-u.s.-between-2000-and-2013">A Study of Active Shooter Incidents in the United States Between 2000 and 2013</a></p></li>
+<li><p>CDC, <a href="http://www.cdc.gov/injury/wisqars/fatal_injury_reports.html">Injury Prevention &amp; Control Fatal Injury Reports, 2013</a></p></li>
 </ul>
 </div>
 <div id="data" class="section level2">
 <h2>Data</h2>
-<pre><code>            state brady_raw_score murders murders_with_firearms active_shooter_deaths population
-1         Alabama              23       2                     1                    17    4830533
-2          Alaska               8      34                    12                     0     737442
-3         Arizona               9     304                   184                     8    6630799
-4        Arkansas              11     154                   110                     1    2957957
-5      California              37    1745                  1224                    45   38414128
-6        Colorado              17     174                    88                    23    5271132
-7     Connecticut              36      86                    60                    35    3597168
-8        Delaware              24      39                    33                     0     925353
-9         Florida              22      NA                    NA                    29   19594467
-10        Georgia              20     534                   411                     3    9991562
-11         Hawaii              29       9                     6                     0    1408765
-12          Idaho              10      26                    15                     1    1612785
-13       Illinois              27     433                   364                    15   12889580
-14        Indiana              25     311                   238                     5    6570518
-15           Iowa              16      42                    18                     0    3092224
-16         Kansas               5     112                    78                     6    2894630
-17       Kentucky               4     165                   111                     5    4398500
-18      Louisiana               2     453                   356                     6    4627491
-19          Maine              22      24                    12                     0    1328778
-20       Maryland              33     379                   268                     0    5936040
-21  Massachusetts              31     135                    78                     0    6708810
-22       Michigan              18     625                   440                     2    9900506
-23      Minnesota              19     110                    60                    17    5420541
-24    Mississippi               5     142                   110                     6    2990976
-25       Missouri               1     371                   273                    14    6043708
-26        Montana               3      15                     9                     0    1014402
-27       Nebraska              30      57                    39                     9    1869300
-28         Nevada              12     157                    87                     7    2790366
-29  New Hampshire              28      21                     5                     0    1322660
-30     New Jersey              34     401                   291                     2    8907384
-31     New Mexico              10     106                    59                     4    2086890
-32       New York              32     648                   362                    18   19691032
-33 North Carolina              12     452                   315                     5    9845432
-34   North Dakota              20      11                     4                     0     723626
-35           Ohio              13     434                   309                    18   11572232
-36       Oklahoma              11     191                   127                     0    3853405
-37         Oregon              14      78                    43                     5    3928030
-38   Pennsylvania              21     594                   440                    25   12783536
-39   Rhode Island              26      31                    18                     0    1052856
-40 South Carolina              11     296                   224                     1    4768498
-41   South Dakota               6      12                     3                     0     845270
-42      Tennessee              20     327                   223                     4    6496130
-43          Texas              12    1133                   760                    21   26500674
-44           Utah               2      49                    31                     5    2903685
-45        Vermont               5       9                     5                     2     627129
-46       Virginia              35     315                   225                    35    8267875
-47     Washington              19     155                    86                    26    6973281
-48  West Virginia              22      54                    30                     0    1852985
-49      Wisconsin              15     157                   103                    29    5743653
-50        Wyoming               7      15                     9                     0     583131</code></pre>
+<pre><code>            state raw_score murders murders_with_firearms active_shooter_deaths suicides_with_firearms population
+1         Alabama        23       2                     1                    17                    504    4830533
+2          Alaska         8      34                    12                     0                    120     737442
+3         Arizona         9     304                   184                     8                    655    6630799
+4        Arkansas        11     154                   110                     1                    322    2957957
+5      California        37    1745                  1224                    45                   1571   38414128
+6        Colorado        17     174                    88                    23                    489    5271132
+7     Connecticut        36      86                    60                    35                     92    3597168
+8        Delaware        24      39                    33                     0                     60     925353
+9         Florida        22      NA                    NA                    29                   1566   19594467
+10        Georgia        20     534                   411                     3                    747    9991562
+11         Hawaii        29       9                     6                     0                     28    1408765
+12          Idaho        10      26                    15                     1                    200    1612785
+13       Illinois        27     433                   364                    15                    496   12889580
+14        Indiana        25     311                   238                     5                    523    6570518
+15           Iowa        16      42                    18                     0                    221    3092224
+16         Kansas         5     112                    78                     6                    241    2894630
+17       Kentucky         4     165                   111                     5                    453    4398500
+18      Louisiana         2     453                   356                     6                    408    4627491
+19          Maine        22      24                    12                     0                    137    1328778
+20       Maryland        33     379                   268                     0                    257    5936040
+21  Massachusetts        31     135                    78                     0                    112    6708810
+22       Michigan        18     625                   440                     2                    674    9900506
+23      Minnesota        19     110                    60                    17                    339    5420541
+24    Mississippi         5     142                   110                     6                    279    2990976
+25       Missouri         1     371                   273                    14                    556    6043708
+26        Montana         3      15                     9                     0                    147    1014402
+27       Nebraska        30      57                    39                     9                    111    1869300
+28         Nevada        12     157                    87                     7                    292    2790366
+29  New Hampshire        28      21                     5                     0                     81    1322660
+30     New Jersey        34     401                   291                     2                    194    8907384
+31     New Mexico        10     106                    59                     4                    222    2086890
+32       New York        32     648                   362                    18                    465   19691032
+33 North Carolina        12     452                   315                     5                    771    9845432
+34   North Dakota        20      11                     4                     0                     76     723626
+35           Ohio        13     434                   309                    18                    800   11572232
+36       Oklahoma        11     191                   127                     0                    433    3853405
+37         Oregon        14      78                    43                     5                    389    3928030
+38   Pennsylvania        21     594                   440                    25                    918   12783536
+39   Rhode Island        26      31                    18                     0                     34    1052856
+40 South Carolina        11     296                   224                     1                    470    4768498
+41   South Dakota         6      12                     3                     0                     71     845270
+42      Tennessee        20     327                   223                     4                    676    6496130
+43          Texas        12    1133                   760                    21                   1780   26500674
+44           Utah         2      49                    31                     5                    295    2903685
+45        Vermont         5       9                     5                     2                     59     627129
+46       Virginia        35     315                   225                    35                    601    8267875
+47     Washington        19     155                    86                    26                    483    6973281
+48  West Virginia        22      54                    30                     0                    225    1852985
+49      Wisconsin        15     157                   103                    29                    437    5743653
+50        Wyoming         7      15                     9                     0                     89     583131</code></pre>
+</div>
+<div id="fine-print" class="section level2">
+<h2>Fine print</h2>
+<p>FBI UCR has no murder data for Florida, limited data for Alabama and Illinois.</p>
+</div>
+<div id="source-code" class="section level2">
+<h2>Source Code</h2>
+<p><a href="http://github.com/brady-score"><a href="http://github.com/brady-score" class="uri">http://github.com/brady-score</a></a></p>
 </div>
 
 

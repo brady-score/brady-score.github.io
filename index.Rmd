@@ -5,99 +5,198 @@ output:
     self_contained: no
 ---
 
+The Law Center to Prevent Gun Violence and the Brady Campaign to Prevent Gun Violence ranked all fifty states based on thirty policy approaches to regulating guns and ammunition. States received points for stronger laws and lost points for weaker laws.
+
+The purpose of this analysis is to let you check the validity of the following statement by the Brady Campaign:
+
+> ...it is clear that the data supports the conclusion that state gun laws and the rate of gun deaths are closely tied.
+
 ```{r rawdata, echo=FALSE, message=FALSE, warning=FALSE}
 d <- read.csv(
 text = "
-\"state\",brady_raw_score,murders,murders_with_firearms,active_shooter_deaths,population
-\"Alabama\",3.5,2,1,17,4830533
-\"Alaska\",‐7,34,12,0,737442
-\"Arizona\",‐8,304,184,8,6630799
-\"Arkansas\",1,154,110,1,2957957
-\"California\",75,1745,1224,45,38414128
-\"Colorado\",14.5,174,88,23,5271132
-\"Connecticut\",70,86,60,35,3597168
-\"Delaware\",34.5,39,33,0,925353
-\"Florida\",3,,,29,19594467
-\"Georgia\",2,534,411,3,9991562
-\"Hawaii\",58.5,9,6,0,1408765
-\"Idaho\",0,26,15,1,1612785
-\"Illinois\",45,433,364,15,12889580
-\"Indiana\",4.5,311,238,5,6570518
-\"Iowa\",14,42,18,0,3092224
-\"Kansas\",‐4,112,78,6,2894630
-\"Kentucky\",‐3.5,165,111,5,4398500
-\"Louisiana\",‐2,453,356,6,4627491
-\"Maine\",3,24,12,0,1328778
-\"Maryland\",66.5,379,268,0,5936040
-\"Massachusetts\",60.5,135,78,0,6708810
-\"Michigan\",15,625,440,2,9900506
-\"Minnesota\",19.5,110,60,17,5420541
-\"Mississippi\",‐4,142,110,6,2990976
-\"Missouri\",‐0.5,371,273,14,6043708
-\"Montana\",‐3,15,9,0,1014402
-\"Nebraska\",6.5,57,39,9,1869300
-\"Nevada\",1.5,157,87,7,2790366
-\"New Hampshire\",5.5,21,5,0,1322660
-\"New Jersey\",68.5,401,291,2,8907384
-\"New Mexico\",0,106,59,4,2086890
-\"New York\",65.5,648,362,18,19691032
-\"North Carolina\",1.5,452,315,5,9845432
-\"North Dakota\",2,11,4,0,723626
-\"Ohio\",10,434,309,18,11572232
-\"Oklahoma\",1,191,127,0,3853405
-\"Oregon\",11,78,43,5,3928030
-\"Pennsylvania\",20,594,440,25,12783536
-\"Rhode Island\",41.5,31,18,0,1052856
-\"South Carolina\",1,296,224,1,4768498
-\"South Dakota\",‐4.5,12,3,0,845270
-\"Tennessee\",2,327,223,4,6496130
-\"Texas\",1.5,1133,760,21,26500674
-\"Utah\",‐2,49,31,5,2903685
-\"Vermont\",‐4,9,5,2,627129
-\"Virginia\",7,315,225,35,8267875
-\"Washington\",19.5,155,86,26,6973281
-\"West Virginia\",3,54,30,0,1852985
-\"Wisconsin\",13,157,103,29,5743653
-\"Wyoming\",‐5,15,9,0,583131
+\"state\",raw_score,murders,murders_with_firearms,active_shooter_deaths,suicides_with_firearms,population
+\"Alabama\",3.5,2,1,17,504,4830533
+\"Alaska\",‐7,34,12,0,120,737442
+\"Arizona\",‐8,304,184,8,655,6630799
+\"Arkansas\",1,154,110,1,322,2957957
+\"California\",75,1745,1224,45,1571,38414128
+\"Colorado\",14.5,174,88,23,489,5271132
+\"Connecticut\",70,86,60,35,92,3597168
+\"Delaware\",34.5,39,33,0,60,925353
+\"Florida\",3,,,29,1566,19594467
+\"Georgia\",2,534,411,3,747,9991562
+\"Hawaii\",58.5,9,6,0,28,1408765
+\"Idaho\",0,26,15,1,200,1612785
+\"Illinois\",45,433,364,15,496,12889580
+\"Indiana\",4.5,311,238,5,523,6570518
+\"Iowa\",14,42,18,0,221,3092224
+\"Kansas\",‐4,112,78,6,241,2894630
+\"Kentucky\",‐3.5,165,111,5,453,4398500
+\"Louisiana\",‐2,453,356,6,408,4627491
+\"Maine\",3,24,12,0,137,1328778
+\"Maryland\",66.5,379,268,0,257,5936040
+\"Massachusetts\",60.5,135,78,0,112,6708810
+\"Michigan\",15,625,440,2,674,9900506
+\"Minnesota\",19.5,110,60,17,339,5420541
+\"Mississippi\",‐4,142,110,6,279,2990976
+\"Missouri\",‐0.5,371,273,14,556,6043708
+\"Montana\",‐3,15,9,0,147,1014402
+\"Nebraska\",6.5,57,39,9,111,1869300
+\"Nevada\",1.5,157,87,7,292,2790366
+\"New Hampshire\",5.5,21,5,0,81,1322660
+\"New Jersey\",68.5,401,291,2,194,8907384
+\"New Mexico\",0,106,59,4,222,2086890
+\"New York\",65.5,648,362,18,465,19691032
+\"North Carolina\",1.5,452,315,5,771,9845432
+\"North Dakota\",2,11,4,0,76,723626
+\"Ohio\",10,434,309,18,800,11572232
+\"Oklahoma\",1,191,127,0,433,3853405
+\"Oregon\",11,78,43,5,389,3928030
+\"Pennsylvania\",20,594,440,25,918,12783536
+\"Rhode Island\",41.5,31,18,0,34,1052856
+\"South Carolina\",1,296,224,1,470,4768498
+\"South Dakota\",‐4.5,12,3,0,71,845270
+\"Tennessee\",2,327,223,4,676,6496130
+\"Texas\",1.5,1133,760,21,1780,26500674
+\"Utah\",‐2,49,31,5,295,2903685
+\"Vermont\",‐4,9,5,2,59,627129
+\"Virginia\",7,315,225,35,601,8267875
+\"Washington\",19.5,155,86,26,483,6973281
+\"West Virginia\",3,54,30,0,225,1852985
+\"Wisconsin\",13,157,103,29,437,5743653
+\"Wyoming\",‐5,15,9,0,89,583131
 ")
-d$brady_raw_score <- as.numeric(d$brady_raw_score)
+d$raw_score <- as.numeric(d$raw_score)
 d$murders_per_100000 <- 100000 * d$murders / d$population
 d$firearm_murders_per_100000 <- d$murders_with_firearms / (d$population/100000)
 d$active_shooter_deaths_per_100000 <- d$active_shooter_deaths / (d$population*(2013-2000+1)/100000)
+d$suicides_with_firearms_per_100000 <- d$suicides_with_firearms / (d$population/100000)
+model1 <- summary(lm(d$firearm_murders_per_100000~d$raw_score, weights=d$population))
+model2 <- summary(lm(d$active_shooter_deaths_per_100000~d$raw_score, weights=d$population))
+model3 <- summary(lm(d$suicides_with_firearms_per_100000~d$raw_score, weights=d$population))
 ```
 
-```{r scatterplot1,  echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5, dpi=300}
+Summary
+-------
+
+|Dependent varaible                            |p value|
+|----------------------------------------------|-------|
+|Murders with firearm per 100,000              |`r as.character(signif(model1$coefficients["d$raw_score","Pr(>|t|)"], digits=2)) `|
+|Deaths in active shooter incidents per 100,000|`r as.character(signif(model2$coefficients["d$raw_score","Pr(>|t|)"], digits=2)) `|
+|Suicides with firearm per 100,000             |`r as.character(signif(model3$coefficients["d$raw_score","Pr(>|t|)"], digits=2)) `|
+
+Murders with Firearm
+--------------------
+
+Start with a simple scatterplot.
+
+```{r scatterplot1,  echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5, dpi=150}
 par(mar=c(4,4,1,1))
-symbols(d$brady_raw_score, d$firearm_murders_per_100000, 
+symbols(d$raw_score, d$firearm_murders_per_100000, 
      circles=sqrt(d$population), 
   	 xlab="Brady raw score", 
      ylab="Murders with firearm per 100,000",
      fg="white", bg="yellow", inches=0.2
      )
-text(d$brady_raw_score, d$firearm_murders_per_100000, d$state, cex=0.5)
+text(d$raw_score, d$firearm_murders_per_100000, d$state, cex=0.5)
 ```
 
-```{r a1m2, echo=FALSE, message=FALSE, warning=FALSE, comment=NA}
-summary(lm(d$firearm_murders_per_100000~d$brady_raw_score, weights=d$population))
+Horizontal axis is raw score (higher number means stronger laws). Vertical axis is rate of murders with firearm. Each state is represented by a cirle, circle size is proportional to state's population.
+
+Next, plot [receiver operating characteristic](https://en.wikipedia.org/wiki/Receiver_operating_characteristic). It visually shows separating power of a model. Diagonal line means no separation, curve going through upper left corner means ideal separation.
+
+```{r roc1, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=6.5, dpi=150}
+s <- d[order(d$raw_score),]
+s <- subset(s, s$state!='Florida') # No data for Florida
+plot( cumsum(s$population-s$murders)/sum(s$population-s$murders)
+    , cumsum(s$murders)/sum(s$murders)
+    , xlim=c(0,1)
+    , ylim=c(0,1)
+    , xlab="Proportion of not murdered with firearm"
+    , ylab="Proportion of murdered with firearm"
+    , type='l'
+    , main="Receiver Operating Characteristic"
+    )
+abline(0,1,lty=3)
 ```
 
-```{r scatterplot2,  echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5, dpi=300}
+Finally, fit linear regression weighted by population:
+
+```{r model1, echo=FALSE, message=FALSE, warning=FALSE, comment=NA}
+model1
+```
+
+Mass Shootings
+--------------
+
+Now repeat the same comparison with mass shooting deaths.
+
+```{r scatterplot2,  echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5, dpi=150}
 par(mar=c(4,4,1,1))
-symbols(d$brady_raw_score, d$active_shooter_deaths_per_100000, 
+symbols(d$raw_score, d$active_shooter_deaths_per_100000, 
      circles=sqrt(d$population), 
   	 xlab="Brady raw score", 
      ylab="Deaths in active shooter incidents per 100,000",
      fg="white", bg="lightblue", inches=0.2
      )
-text(d$brady_raw_score, d$active_shooter_deaths_per_100000, d$state, cex=0.5)
+t <- as.character(d$state)
+t[d$active_shooter_deaths == 0] <- ''
+text(d$raw_score, d$active_shooter_deaths_per_100000, t, cex=0.5)
 ```
 
-```{r a2m1, echo=FALSE, message=FALSE, warning=FALSE, comment=NA}
-summary(lm(d$active_shooter_deaths_per_100000~d$brady_raw_score, weights=d$population))
+```{r roc2, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=6.5, dpi=150}
+s <- d[order(d$raw_score),]
+plot( cumsum(s$population-s$active_shooter_deaths)/sum(s$population-s$active_shooter_deaths)
+    , cumsum(s$active_shooter_deaths)/sum(s$active_shooter_deaths)
+    , xlim=c(0,1)
+    , ylim=c(0,1)
+    , xlab="Proportion of not murdered by active shooter"
+    , ylab="Proportion of murdered by active shooter"
+    , type='l'
+    , main="Receiver Operating Characteristic"
+    )
+abline(0,1,lty=3)
 ```
 
-Data Sources
-------------
+```{r model2, echo=FALSE, message=FALSE, warning=FALSE, comment=NA}
+model2
+```
+
+Suicides with a Firearm
+-----------------------
+
+Finally, repeat the same comparison with suicides with a firearm.
+
+```{r scatterplot3,  echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=5, dpi=150}
+par(mar=c(4,4,1,1))
+symbols(d$raw_score, d$suicides_with_firearms_per_100000, 
+     circles=sqrt(d$population), 
+  	 xlab="Brady raw score", 
+     ylab="Suicides with a firearm per 100,000",
+     fg="white", bg="lightcyan", inches=0.2
+     )
+text(d$raw_score, d$suicides_with_firearms_per_100000, as.character(d$state), cex=0.5)
+```
+
+```{r roc3, echo=FALSE, message=FALSE, warning=FALSE, fig.width=6, fig.height=6.5, dpi=150}
+plot( cumsum(s$population-s$suicides_with_firearms)/sum(s$population-s$suicides_with_firearms)
+    , cumsum(s$suicides_with_firearms)/sum(s$suicides_with_firearms)
+    , xlim=c(0,1)
+    , ylim=c(0,1)
+    , xlab="Proportion of no suicide with a firearm"
+    , ylab="Proportion of suicides with a firearm"
+    , type='l'
+    , main="Receiver Operating Characteristic"
+    )
+abline(0,1,lty=3)
+```
+
+```{r model3, echo=FALSE, message=FALSE, warning=FALSE, comment=NA}
+model3
+```
+
+Sources
+-------
 
 * Brady Campain to Prevent Gun Violence,
   [2013 State Scorecard](http://www.bradycampaign.org/2013-state-scorecard)
@@ -107,6 +206,8 @@ Data Sources
 * United States Census Bureau, [Population Estimates](http://www.census.gov/popest/data/state/totals/2015/index.html)
   
 * FBI, [A Study of Active Shooter Incidents in the United States Between 2000 and 2013](https://www.fbi.gov/news/stories/2014/september/fbi-releases-study-on-active-shooter-incidents/pdfs/a-study-of-active-shooter-incidents-in-the-u.s.-between-2000-and-2013)
+
+* CDC, [Injury Prevention & Control Fatal Injury Reports, 2013](http://www.cdc.gov/injury/wisqars/fatal_injury_reports.html)
   
 Data
 ----
@@ -115,8 +216,18 @@ Data
 d$murders_per_100000 <- NULL
 d$firearm_murders_per_100000 <- NULL
 d$active_shooter_deaths_per_100000 <- NULL
+d$suicides_with_firearms_per_100000 <- NULL
 options(scipen=999)
 options(width=200)
 d
 ```
 
+Fine print
+----------
+
+FBI UCR has no murder data for Florida, limited data for Alabama and Illinois. 
+
+Source Code
+-----------
+
+[http://github.com/brady-score](http://github.com/brady-score)
