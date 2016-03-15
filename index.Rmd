@@ -7,9 +7,9 @@ output:
 
 The Law Center to Prevent Gun Violence and the Brady Campaign to Prevent Gun Violence ranked all fifty states based on thirty policy approaches to regulating guns and ammunition. States received points for stronger laws and lost points for weaker laws.
 
-The purpose of this analysis is to let you check the validity of the following statement by the Brady Campaign:
+The purpose of this analysis is to check the validity of the following statement by the Brady Campaign:
 
-> ...it is clear that the data supports the conclusion that state gun laws and the rate of gun deaths are closely tied.
+> the data supports the conclusion that state gun laws and the rate of gun deaths are closely tied
 
 ```{r rawdata, echo=FALSE, message=FALSE, warning=FALSE}
 d <- read.csv(
@@ -79,14 +79,15 @@ model3 <- summary(lm(d$suicides_with_firearms_per_100000~d$raw_score, weights=d$
 Summary
 -------
 
-|Dependent varaible                            |p value|
-|----------------------------------------------|-------|
-|Murders with firearm per 100,000              |`r as.character(signif(model1$coefficients["d$raw_score","Pr(>|t|)"], digits=2)) `|
-|Deaths in active shooter incidents per 100,000|`r as.character(signif(model2$coefficients["d$raw_score","Pr(>|t|)"], digits=2)) `|
-|Suicides with firearm per 100,000             |`r as.character(signif(model3$coefficients["d$raw_score","Pr(>|t|)"], digits=2)) `|
+* The data does not support the conclusion that state gun laws and rate of murders with firearm are closely tied (p-value `r as.character(signif(model1$coefficients["d$raw_score","Pr(>|t|)"], digits=2))`)
 
-Murders with Firearm
---------------------
+* The data does not support the conclusion that state gun laws and rate of deaths in active shooter incidents are closely tied (p-value `r as.character(signif(model2$coefficients["d$raw_score","Pr(>|t|)"], digits=2)) `)
+
+* The data supports the conclusion that state gun laws and rate of suicides with a firearm are closely tied (p-value `r as.character(signif(model3$coefficients["d$raw_score","Pr(>|t|)"], digits=2))`)
+
+
+1. Murders with Firearm
+-----------------------
 
 Start with a simple scatterplot.
 
@@ -115,19 +116,19 @@ plot( cumsum(s$population-s$murders)/sum(s$population-s$murders)
     , xlab="Proportion of not murdered with firearm"
     , ylab="Proportion of murdered with firearm"
     , type='l'
-    , main="Receiver Operating Characteristic"
+    , main="Murders with Firearm ROC"
     )
 abline(0,1,lty=3)
 ```
 
-Finally, fit linear regression weighted by population:
+Fit cross-sectional linear regression weighted by population:
 
 ```{r model1, echo=FALSE, message=FALSE, warning=FALSE, comment=NA}
 model1
 ```
 
-Mass Shootings
---------------
+2. Mass Shootings
+-----------------
 
 Now repeat the same comparison with mass shooting deaths.
 
@@ -153,7 +154,7 @@ plot( cumsum(s$population-s$active_shooter_deaths)/sum(s$population-s$active_sho
     , xlab="Proportion of not murdered by active shooter"
     , ylab="Proportion of murdered by active shooter"
     , type='l'
-    , main="Receiver Operating Characteristic"
+    , main="Mass Shootings ROC"
     )
 abline(0,1,lty=3)
 ```
@@ -162,8 +163,8 @@ abline(0,1,lty=3)
 model2
 ```
 
-Suicides with a Firearm
------------------------
+3. Suicides with a Firearm
+--------------------------
 
 Finally, repeat the same comparison with suicides with a firearm.
 
@@ -186,7 +187,7 @@ plot( cumsum(s$population-s$suicides_with_firearms)/sum(s$population-s$suicides_
     , xlab="Proportion of no suicide with a firearm"
     , ylab="Proportion of suicides with a firearm"
     , type='l'
-    , main="Receiver Operating Characteristic"
+    , main="Suicides with a Firearm ROC"
     )
 abline(0,1,lty=3)
 ```
